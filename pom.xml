@@ -7,18 +7,21 @@
     <groupId>org.wso2.carbon</groupId>
     <artifactId>org.wso2.carbon.identity.extended.recovery.store</artifactId>
     <version>1.0.0</version>
-    <packaging>bundle</packaging>
+
+    <properties>
+        <carbon.identity.framework.version>5.12.153</carbon.identity.framework.version>
+    </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.wso2.carbon.identity.framework</groupId>
             <artifactId>org.wso2.carbon.identity.mgt</artifactId>
-            <version>5.12.153</version>
+            <version>${carbon.identity.framework.version}</version>
         </dependency>
         <dependency>
             <groupId>org.wso2.carbon.identity.framework</groupId>
             <artifactId>org.wso2.carbon.identity.base</artifactId>
-            <version>5.12.153</version>
+            <version>${carbon.identity.framework.version}</version>
         </dependency>
     </dependencies>
 
@@ -34,30 +37,19 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-scr-plugin</artifactId>
-                <version>1.24.0</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <extensions>true</extensions>
-                <configuration>
-                    <instructions>
-                        <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-                        <Bundle-Name>${project.artifactId}</Bundle-Name>
-<!--                        <Private-Package>org.wso2.carbon.identity.extended.recovery.store.internal,</Private-Package>-->
-                        <Import-Package>
-
-                        </Import-Package>
-                        <Export-Package>org.wso2.carbon.identity.extended.recovery.store.*;</Export-Package>
-                        <DynamicImport-Package>*</DynamicImport-Package>
-                    </instructions>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 
-
+    <repositories>
+        <repository>
+            <id>wso2-nexus</id>
+            <name>WSO2 internal Repository</name>
+            <url>http://maven.wso2.org/nexus/content/groups/wso2-public/</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+                <checksumPolicy>ignore</checksumPolicy>
+            </releases>
+        </repository>
+    </repositories>
 </project>

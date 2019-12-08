@@ -10,6 +10,7 @@
 
     <properties>
         <carbon.identity.framework.version>5.12.153</carbon.identity.framework.version>
+        <commons-codec.version>1.4.0.wso2v1</commons-codec.version>
     </properties>
 
     <dependencies>
@@ -17,11 +18,17 @@
             <groupId>org.wso2.carbon.identity.framework</groupId>
             <artifactId>org.wso2.carbon.identity.mgt</artifactId>
             <version>${carbon.identity.framework.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.axis2.wso2</groupId>
+                    <artifactId>axis2-client</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
-            <groupId>org.wso2.carbon.identity.framework</groupId>
-            <artifactId>org.wso2.carbon.identity.base</artifactId>
-            <version>${carbon.identity.framework.version}</version>
+            <groupId>commons-codec.wso2</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>${commons-codec.version}</version>
         </dependency>
     </dependencies>
 

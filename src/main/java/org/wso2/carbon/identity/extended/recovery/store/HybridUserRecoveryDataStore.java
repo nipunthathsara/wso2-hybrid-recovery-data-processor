@@ -1,5 +1,6 @@
 package org.wso2.carbon.identity.extended.recovery.store;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.identity.base.IdentityException;
@@ -20,10 +21,16 @@ public class HybridUserRecoveryDataStore implements UserRecoveryDataStore {
     public void store(UserRecoveryDataDO recoveryDataDO) throws IdentityException {
 
         if (isJDBCPrioritized()) {
-            log.debug("Storing JDBC recovery data for the user : " + recoveryDataDO.getUserName());
+            if (log.isDebugEnabled()) {
+                log.debug("Storing JDBC recovery data for the user : " + recoveryDataDO.getUserName()
+                        + ", (hashed)code : " + DigestUtils.sha256Hex(recoveryDataDO.getCode()));
+            }
             jdbcUserRecoveryDataStore.store(recoveryDataDO);
         } else {
-            log.debug("Storing Registry recovery data for the user : " + recoveryDataDO.getUserName());
+            if (log.isDebugEnabled()) {
+                log.debug("Storing Registry recovery data for the user : " + recoveryDataDO.getUserName()
+                        + ", (hashed)code : " + DigestUtils.sha256Hex(recoveryDataDO.getCode()));
+            }
             registryRecoveryDataStore.store(recoveryDataDO);
         }
     }
@@ -32,10 +39,14 @@ public class HybridUserRecoveryDataStore implements UserRecoveryDataStore {
     public void store(UserRecoveryDataDO[] recoveryDataDOs) throws IdentityException {
 
         if (isJDBCPrioritized()) {
-            log.debug("Storing recovery data in the JDBC store.");
+            if (log.isDebugEnabled()) {
+                log.debug("Storing recovery data in the JDBC store.");
+            }
             jdbcUserRecoveryDataStore.store(recoveryDataDOs);
         } else {
-            log.debug("Storing recovery data in the Registry store.");
+            if (log.isDebugEnabled()) {
+                log.debug("Storing recovery data in the Registry store.");
+            }
             registryRecoveryDataStore.store(recoveryDataDOs);
         }
     }
@@ -44,18 +55,28 @@ public class HybridUserRecoveryDataStore implements UserRecoveryDataStore {
     public UserRecoveryDataDO load(String code) throws IdentityException {
 
         if (isJDBCPrioritized()) {
-            log.debug("Loading confirmation code from the JDBC first.");
+            if (log.isDebugEnabled()) {
+                log.debug("Loading confirmation (hashed)code : " + DigestUtils.sha256Hex(code) + " from the JDBC first.");
+            }
             UserRecoveryDataDO userRecoveryDataDO = jdbcUserRecoveryDataStore.load(code);
             if (userRecoveryDataDO == null) {
-                log.debug("Loading confirmation code from the Registry, as the JDBC failed.");
+                if (log.isDebugEnabled()) {
+                    log.debug("Loading confirmation (hashed)code : " + DigestUtils.sha256Hex(code)
+                            + " from the Registry, as the JDBC failed.");
+                }
                 userRecoveryDataDO = registryRecoveryDataStore.load(code);
             }
             return userRecoveryDataDO;
         } else {
-            log.debug("Loading confirmation code from the Registry first.");
+            if (log.isDebugEnabled()) {
+                log.debug("Loading confirmation (hashed)code : " + DigestUtils.sha256Hex(code) + " from the Registry first.");
+            }
             UserRecoveryDataDO userRecoveryDataDO = registryRecoveryDataStore.load(code);
             if (userRecoveryDataDO == null) {
-                log.debug("Loading confirmation code from the JDBC, as the Registry failed.");
+                if (log.isDebugEnabled()) {
+                    log.debug("Loading confirmation (hashed)code : " + DigestUtils.sha256Hex(code)
+                            + " from the JDBC, as the Registry failed.");
+                }
                 userRecoveryDataDO = jdbcUserRecoveryDataStore.load(code);
             }
             return userRecoveryDataDO;
@@ -66,10 +87,14 @@ public class HybridUserRecoveryDataStore implements UserRecoveryDataStore {
     public void invalidate(String code) throws IdentityException {
 
         if (isJDBCPrioritized()) {
-            log.debug("Invalidating code from the JDBC store.");
+            if (log.isDebugEnabled()) {
+                log.debug("Invalidating (hashed)code : " + DigestUtils.sha256Hex(code) + " from the JDBC store.");
+            }
             jdbcUserRecoveryDataStore.invalidate(code);
         } else {
-            log.debug("Invalidating code from the Registry store.");
+            if (log.isDebugEnabled()) {
+                log.debug("Invalidating (hashed)code : " + DigestUtils.sha256Hex(code) + " from the Registry store.");
+            }
             registryRecoveryDataStore.invalidate(code);
         }
     }
@@ -78,13 +103,15 @@ public class HybridUserRecoveryDataStore implements UserRecoveryDataStore {
     public void invalidate(UserRecoveryDataDO recoveryDataDO) throws IdentityException {
 
         if (isJDBCPrioritized()) {
-            if (recoveryDataDO != null) {
-                log.debug("Invalidating recovery data from the JDBC store. username : " + recoveryDataDO.getUserName());
+            if (log.isDebugEnabled()) {
+                log.debug("Invalidating recovery data from the JDBC store. username : " + recoveryDataDO.getUserName()
+                        + ", (hashed)code : " + DigestUtils.sha256Hex(recoveryDataDO.getCode()));
             }
             jdbcUserRecoveryDataStore.invalidate(recoveryDataDO);
         } else {
-            if (recoveryDataDO != null) {
-                log.debug("Invalidating recovery data from the Registry store. username : " + recoveryDataDO.getUserName());
+            if (log.isDebugEnabled()) {
+                log.debug("Invalidating recovery data from the Registry store. username : " + recoveryDataDO.getUserName()
+                        + ", (hashed)code : " + DigestUtils.sha256Hex(recoveryDataDO.getCode()));
             }
             registryRecoveryDataStore.invalidate(recoveryDataDO);
         }
@@ -94,12 +121,16 @@ public class HybridUserRecoveryDataStore implements UserRecoveryDataStore {
     public void invalidate(String userId, int tenantId) throws IdentityException {
 
         if (isJDBCPrioritized()) {
-            log.debug("Invalidating recovery data for the userId : " + userId + ", tenantId : " + tenantId +
-                    " from the JDBC store.");
+            if (log.isDebugEnabled()) {
+                log.debug("Invalidating recovery data for the userId : " + userId + ", tenantId : " + tenantId +
+                        " from the JDBC store.");
+            }
             jdbcUserRecoveryDataStore.invalidate(userId, tenantId);
         } else {
-            log.debug("Invalidating recovery data for the userId : " + userId + ", tenantId : " + tenantId +
-                    " from the Registry store.");
+            if (log.isDebugEnabled()) {
+                log.debug("Invalidating recovery data for the userId : " + userId + ", tenantId : " + tenantId +
+                        " from the Registry store.");
+            }
             registryRecoveryDataStore.invalidate(userId, tenantId);
         }
     }
@@ -108,12 +139,16 @@ public class HybridUserRecoveryDataStore implements UserRecoveryDataStore {
     public UserRecoveryDataDO[] load(String userName, int tenantId) throws IdentityException {
 
         if (isJDBCPrioritized()) {
-            log.debug("Loading recovery data for the username : " + userName + ", tenantId : " + tenantId +
-                    " from the JDBC store.");
+            if (log.isDebugEnabled()) {
+                log.debug("Loading recovery data for the username : " + userName + ", tenantId : " + tenantId +
+                        " from the JDBC store.");
+            }
             return jdbcUserRecoveryDataStore.load(userName, tenantId);
         } else {
-            log.debug("Loading recovery data for the username : " + userName + ", tenantId : " + tenantId +
-                    " from the Registry store.");
+            if (log.isDebugEnabled()) {
+                log.debug("Loading recovery data for the username : " + userName + ", tenantId : " + tenantId +
+                        " from the Registry store.");
+            }
             return registryRecoveryDataStore.load(userName, tenantId);
         }
     }

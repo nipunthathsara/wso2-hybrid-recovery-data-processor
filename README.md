@@ -8,7 +8,7 @@ This will provide an smoother migration from Registry to JDBC without loosing an
 codes and vice versa. 
 
 ### Applicable product versions.
-WSO2 Identity Server 5.7.0
+WSO2 Identity Server 5.3.0
 
 ### How to use.
 Follow below steps to use this log appender.

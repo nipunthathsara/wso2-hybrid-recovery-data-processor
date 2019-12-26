@@ -9,7 +9,7 @@
     <version>1.0.0</version>
 
     <properties>
-        <carbon.identity.framework.version>5.12.153</carbon.identity.framework.version>
+        <carbon.identity.framework.version>5.7.5</carbon.identity.framework.version>
         <commons-codec.version>1.4.0.wso2v1</commons-codec.version>
     </properties>
 
